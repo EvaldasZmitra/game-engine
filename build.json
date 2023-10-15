@@ -1,0 +1,16 @@
+{
+  "name": "myapp",
+  "type": "exe",
+  "WarningsAsErrors": false,
+  "OptimizationLevel": 0,
+  "libraries": ["glew32", "glfw3", "SDL2", "opengl32"],
+  "package-manager": "pacman",
+  "packages": {
+    "pacman": [
+      "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-glew",
+      "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-SDL2",
+      "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-glfw"
+    ],
+    "apt": []
+  }
+}
