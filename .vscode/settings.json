@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "glew.h": "c",
+    "sdl.h": "c",
+    "shader.h": "c",
+    "glib.h": "c",
+    "init.h": "c",
+    "cstdlib": "cpp",
+    "elf_util.h": "c",
+    "elf_shader.h": "c",
+    "elf_render_object.h": "c"
+  }
+}
