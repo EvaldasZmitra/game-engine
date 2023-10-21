@@ -1,12 +1,12 @@
 {
   "name": "myapp",
   "compiler": "gcc",
-  "type": "exe",
-  "flags": "",
-  "WarningsAsErrors": false,
-  "OptimizationLevel": 0,
-  "libraries": ["glew", "SDL2", "glib-2.0", "opengl32"],
-  "package-manager": "pacman",
+  "type": "dll",
+  "flags": {
+    "compiler": ["-g", "-W", "-O0"],
+    "linker": ["-lopengl32"]
+  },
+  "libraries": ["glew", "SDL2", "glib-2.0"],
   "packages": {
     "pacman": [
       "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-glew",
