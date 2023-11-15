@@ -1,7 +1,7 @@
 {
   "name": "myapp",
   "compiler": "gcc",
-  "type": "dll",
+  "type": "exe",
   "flags": {
     "compiler": ["-g", "-W", "-O0"],
     "linker": ["-lopengl32"]
