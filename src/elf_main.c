@@ -4,10 +4,10 @@
 #include <glib.h>
 #include <elf_window.h>
 #include <elf_shader.h>
-#include <elf_util.h>
+#include <elf_io.h>
 #include <elf_render_object.h>
-#include <state.h>
-#include <systems.h>
+#include <elf_state.h>
+#include <elf_systems.h>
 
 #undef main
 
@@ -26,37 +26,39 @@ void handle_elf_event(SDL_Event event)
     }
 }
 
-void advance_my_system(Entity *entity)
+void my_advance(ElfEntity *entity)
 {
-    int another_value = 4;
-    entity->components[0].data = &another_value;
+    void *components = entity->components;
 }
 
 int main(int argc, char *argv[])
 {
-    int data = 5;
-    Systems systems = {
-        .systems = (System[]){
-            {.advance = advance_my_system,
-             .required_component_ids = (int[]){1},
-             .num_required_components = 1}},
-        .num_systems = 1};
-    State state = {
-        .entities = (Entity[]){
+    ElfBitMask256 bitmask;
+    elf_bitmask_256_set(&bitmask, 0);
+    int component1 = 5;
+    void *components[] = {&component1};
+    ElfThreadPool thread_pool = {
+        .num_threads = 1};
+    ElfState state = {
+        .entities = (ElfEntity[]){
             {.id = 1,
-             .components = (Component[]){
-                 {.id = 1,
-                  .data = &data}},
-             .num_components = 1}},
+             .components = components,
+             .components_mask = &bitmask}},
         .num_entities = 1};
-    advance_systems(&systems, &state);
-
-    int a = *(int *)state.entities[0].components[0].data;
+    ElfSystems systems = {
+        .num_systems = 1,
+        .thread_pool = &thread_pool,
+        .systems = (ElfSystem[]){
+            {
+                .required_components = &bitmask,
+                .advance = my_advance,
+            }}};
+    elf_systems_advance(&systems, &state);
 
     // ElfWindow window = elf_window_init();
     // ElfShader shader = elf_shader_create(
-    //     elf_util_read("./resources/test_shader.vert"),
-    //     elf_util_read("./resources/test_shader.frag"));
+    //     elf_io_read("./resources/test_shader.vert"),
+    //     elf_io_read("./resources/test_shader.frag"));
     // elf_shader_add_vec3_data(
     //     &shader,
     //     vertices,

@@ -1,6 +1,6 @@
-#include <elf_util.h>
+#include <elf_io.h>
 
-gchar *elf_util_read(const char *file_path)
+gchar *elf_io_read(const char *file_path)
 {
     GError *error = NULL;
     gchar *contents = NULL;

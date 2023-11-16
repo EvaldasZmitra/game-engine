@@ -1,18 +1,9 @@
 {
   "files.associations": {
-    "glew.h": "c",
-    "sdl.h": "c",
-    "shader.h": "c",
-    "glib.h": "c",
-    "init.h": "c",
-    "cstdlib": "cpp",
-    "elf_util.h": "c",
-    "elf_shader.h": "c",
     "elf_render_object.h": "c",
-    "component.h": "c",
-    "entity.h": "c",
-    "state.h": "c",
-    "systems.h": "c",
-    "system.h": "c"
+    "elf_state.h": "c",
+    "elf_entity.h": "c",
+    "elf_systems.h": "c",
+    "elf_io.h": "c"
   }
 }

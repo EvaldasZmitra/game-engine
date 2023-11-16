@@ -1,20 +1,20 @@
 {
-  "configurations": [
-    {
-      "name": "Win32",
-      "includePath": [
-        "${default}",
-        "C:/msys64/ucrt64/include/glib-2.0",
-        "C:/msys64/ucrt64/include/SDL2",
-        "C:/msys64/ucrt64/include",
-        "C:/msys64/usr/lib/glib-2.0/include",
-        "C:/Projects/game-engine/include"
-      ],
-      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
-      "cStandard": "c17",
-      "cppStandard": "gnu++17",
-      "intelliSenseMode": "windows-gcc-x64"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Wind32",
+            "includePath": [
+                "C:/msys64/ucrt64/include/glib-2.0",
+                "C:/msys64/ucrt64/include",
+                "C:/msys64/ucrt64/lib/glib-2.0/include",
+                "C:/msys64/ucrt64/include/SDL2",
+                "C:\\Projects\\game-engine\\include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ]
+        }
+    ],
+    "version": 4
 }

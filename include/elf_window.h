@@ -12,9 +12,9 @@ typedef struct ElfWindow
 typedef void (*ElfWindowEventAction)(SDL_Event);
 
 ElfWindow elf_window_init();
-void elf_window_quit(const ElfWindow* window);
-void elf_window_clear(const ElfWindow* window);
-void elf_window_update(const ElfWindow* window);
-void elf_window_poll(const ElfWindow* window, ElfWindowEventAction action);
+void elf_window_quit(const ElfWindow *window);
+void elf_window_clear(const ElfWindow *window);
+void elf_window_update(const ElfWindow *window);
+void elf_window_poll(const ElfWindow *window, ElfWindowEventAction action);
 
 #endif
