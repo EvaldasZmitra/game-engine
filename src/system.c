@@ -1,7 +1,14 @@
 #include <system.h>
+#include <math.h>
 
-void advance_system(System *system, State *state)
+void advance_system(System *system, State *state, ThreadPool *thread_pool)
 {
+    int num_entities_per_thread = state->num_entities / thread_pool->num_threads;
+    for (int i = 0; i < state->num_entities; i += num_entities_per_thread)
+    {
+        advance_system_thread(system, state, i, i + num_entities_per_thread);
+    }
+
     for (int i = 0; i < state->num_entities; i++)
     {
         Entity entity = state->entities[i];
@@ -9,6 +16,15 @@ void advance_system(System *system, State *state)
         {
             system->advance(&entity);
         }
+    }
+}
+
+void advance_system_thread(System *system, State *state, int start, int end)
+{
+    for (int i = start; i < end; i++)
+    {
+        Entity *entity = &state->entities[i];
+        system->advance(entity);
     }
 }
 

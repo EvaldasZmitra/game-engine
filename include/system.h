@@ -3,6 +3,7 @@
 
 #include <component.h>
 #include <state.h>
+#include <thread_pool.h>
 
 typedef struct System
 {
@@ -11,7 +12,7 @@ typedef struct System
     void (*advance)(Entity *entity);
 } System;
 
-void advance_system(System *system, State *state);
+void advance_system(System *system, State *state, ThreadPool *thread_pool);
 int does_entity_fit(Entity *entity, System *system);
 
 #endif
