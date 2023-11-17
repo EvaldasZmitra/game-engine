@@ -3,8 +3,8 @@
   "compiler": "gcc",
   "type": "exe",
   "flags": {
-    "compiler": ["-g", "-W", "-O0", "-fopenmp"],
-    "linker": ["-lopengl32", "-fopenmp", "-mconsole"]
+    "compiler": ["-g", "-W", "-Wall", "-O0", "-fopenmp"],
+    "linker": ["-lopengl32", "-mconsole"]
   },
   "libraries": ["glew", "SDL2", "glib-2.0"],
   "packages": {
