@@ -8,6 +8,7 @@
 #include <elf_render_object.h>
 #include <elf_state.h>
 #include <elf_systems.h>
+#include <windows.h>
 
 #undef main
 
@@ -26,7 +27,7 @@ void handle_elf_event(SDL_Event event)
     }
 }
 
-void my_advance(ElfEntity *entity)
+void my_system_advance(ElfEntity *entity)
 {
     void *components = entity->components;
 }
@@ -37,46 +38,49 @@ int main(int argc, char *argv[])
     elf_bitmask_256_set(&bitmask, 0);
     int component1 = 5;
     void *components[] = {&component1};
-    ElfThreadPool thread_pool = {
-        .num_threads = 1};
+
+    int num_entities = 100;
+    ElfEntity entities[num_entities];
+    for (int i = 0; i < num_entities; i++)
+    {
+        entities[i] = (ElfEntity){
+            .id = i,
+            .components = components,
+            .components_mask = &bitmask};
+    }
+
     ElfState state = {
-        .entities = (ElfEntity[]){
-            {.id = 1,
-             .components = components,
-             .components_mask = &bitmask}},
-        .num_entities = 1};
+        .entities = entities,
+        .num_entities = num_entities};
     ElfSystems systems = {
         .num_systems = 1,
-        .thread_pool = &thread_pool,
         .systems = (ElfSystem[]){
             {
                 .required_components = &bitmask,
-                .advance = my_advance,
+                .advance = my_system_advance,
             }}};
-    elf_systems_advance(&systems, &state);
 
-    // ElfWindow window = elf_window_init();
-    // ElfShader shader = elf_shader_create(
-    //     elf_io_read("./resources/test_shader.vert"),
-    //     elf_io_read("./resources/test_shader.frag"));
-    // elf_shader_add_vec3_data(
-    //     &shader,
-    //     vertices,
-    //     3,
-    //     0);
-    // ElfRenderObject triangle = {
-    //     .shader = &shader,
-    //     .count = 3};
-    // while (running)
-    // {
-    //     elf_window_poll(&window, handle_elf_event);
-    //     elf_window_clear(&window);
-    //     elf_render_object_render(&triangle);
-    //     elf_window_update(&window);
-    // }
+    ElfWindow window = elf_window_init();
+    ElfShader shader = elf_shader_create(
+        elf_io_read("./resources/test_shader.vert"),
+        elf_io_read("./resources/test_shader.frag"));
+    elf_shader_add_vec3_data(
+        &shader,
+        vertices,
+        3,
+        0);
+    ElfRenderObject triangle = {
+        .shader = &shader,
+        .count = 3};
+    while (running)
+    {
+        elf_window_poll(&window, handle_elf_event);
+        elf_window_clear(&window);
+        elf_render_object_render(&triangle);
+        elf_window_update(&window);
+        elf_systems_advance(&systems, &state);
+    }
 
-    // elf_shader_free(&shader);
-    // elf_window_quit(&window);
-
-    return 0;
+    elf_shader_free(&shader);
+    elf_window_quit(&window);
 }

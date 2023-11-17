@@ -10,8 +10,14 @@ gchar *elf_io_read(const char *file_path)
     }
     else
     {
-        fprintf(stderr, "Error reading the file: %s\n", error->message);
         g_error_free(error);
         return NULL;
     }
+}
+
+void elf_io_write_append(char *file_path, char *text)
+{
+    FILE *file = fopen(file_path, "a");
+    fprintf(file, text);
+    fclose(file);
 }

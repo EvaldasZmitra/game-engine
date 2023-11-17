@@ -4,6 +4,13 @@
     "elf_state.h": "c",
     "elf_entity.h": "c",
     "elf_systems.h": "c",
-    "elf_io.h": "c"
+    "elf_io.h": "c",
+    "elf_job_queue.h": "c",
+    "pthread.h": "c",
+    "algorithm": "c",
+    "functional": "c",
+    "windows.h": "c",
+    "typeinfo": "c",
+    "stdio.h": "c"
   }
 }
