@@ -29,24 +29,22 @@ void handle_elf_event(SDL_Event event)
 
 void my_system_advance(ElfEntity *entity)
 {
-    void *components = entity->components;
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     ElfBitMask256 bitmask;
     elf_bitmask_256_set(&bitmask, 0);
     int component1 = 5;
-    void *components[] = {&component1};
-
     int num_entities = 100;
     ElfEntity entities[num_entities];
     for (int i = 0; i < num_entities; i++)
     {
-        entities[i] = (ElfEntity){
+        ElfEntity entity = {
             .id = i,
-            .components = components,
+            .components = {&component1},
             .components_mask = &bitmask};
+        entities[i] = entity;
     }
 
     ElfState state = {

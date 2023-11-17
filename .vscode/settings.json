@@ -11,6 +11,7 @@
     "functional": "c",
     "windows.h": "c",
     "typeinfo": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "glm.hpp": "c"
   }
 }

@@ -17,7 +17,6 @@ void elf_system_advance(ElfSystem *system, ElfState *state)
 #pragma omp for
     for (int i = 0; i < state->num_entities; i++)
     {
-        int thread_id = omp_get_thread_num();
         ElfEntity *entity = &state->entities[i];
         if (elf_bitmask_256_contains(entity->components_mask, system->required_components))
         {
