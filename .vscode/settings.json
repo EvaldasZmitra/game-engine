@@ -12,6 +12,8 @@
     "windows.h": "c",
     "typeinfo": "c",
     "stdio.h": "c",
-    "glm.hpp": "c"
+    "glm.hpp": "c",
+    "elf_sphere_collider.h": "c",
+    "math.h": "c"
   }
 }
