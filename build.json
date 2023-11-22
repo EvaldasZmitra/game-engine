@@ -6,13 +6,12 @@
     "compiler": ["-g", "-W", "-Wall", "-O0", "-fopenmp"],
     "linker": ["-lopengl32", "-mconsole"]
   },
-  "libraries": ["glew", "SDL2", "glib-2.0", "glm"],
+  "libraries": ["glew", "SDL2", "glib-2.0"],
   "packages": {
     "pacman": [
       "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-glew",
       "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-SDL2",
-      "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-glib2",
-      "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-cglm"
+      "pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-glib2"
     ],
     "apt": []
   }
