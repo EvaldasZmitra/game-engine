@@ -18,6 +18,15 @@
     "assert.h": "c",
     "elf_tranform.h": "c",
     "cglm.h": "c",
-    "elf_math.h": "c"
-  }
+    "elf_math.h": "c",
+    "scene.h": "c",
+    "cimport.h": "c",
+    "postprocess.h": "c",
+    "ranges": "c",
+    "variant": "c",
+    "glew.h": "c",
+    "format": "c",
+    "memory.h": "c"
+  },
+  "cSpell.words": ["Bitangents", "Lsizei"]
 }

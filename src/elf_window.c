@@ -35,7 +35,7 @@ void elf_window_quit(const ElfWindow *window)
 void elf_window_clear(const ElfWindow *window)
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void elf_window_update(const ElfWindow *window)

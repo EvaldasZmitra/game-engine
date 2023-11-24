@@ -1,5 +1,10 @@
 #include <elf_shader.h>
 
+float vertices[] = {
+    0.0f, 0.5f, 0.0f,
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f};
+
 ElfShader elf_shader_create(const char *vertex_code, const char *fragment_code)
 {
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -16,8 +21,16 @@ ElfShader elf_shader_create(const char *vertex_code, const char *fragment_code)
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
 
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, vertices, GL_STATIC_DRAW);
+
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
     ElfShader shader = {
         .id = shaderProgram,
@@ -26,22 +39,9 @@ ElfShader elf_shader_create(const char *vertex_code, const char *fragment_code)
     return shader;
 }
 
-void elf_shader_add_vec3_data(ElfShader *shader, float *vectors, unsigned int num_vectors, unsigned int index)
-{
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(shader->vao_id);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vectors * 3, vectors, GL_STATIC_DRAW);
-    glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(index);
-    shader->vbo_id = VBO;
-}
-
 void elf_shader_use(const ElfShader *shader)
 {
     glUseProgram(shader->id);
-    glBindVertexArray(shader->vao_id);
 }
 
 void elf_shader_free(const ElfShader *shader)
