@@ -5,7 +5,6 @@
 #include <elf_window.h>
 #include <elf_shader.h>
 #include <elf_io.h>
-#include <elf_render_object.h>
 #include <elf_state.h>
 #include <elf_systems.h>
 #include <elf_model.h>
@@ -33,7 +32,7 @@ void my_system_advance(ElfEntity *entity)
 int main()
 {
     ElfWindow window = elf_window_init();
-    ElfShader shader = elf_shader_create(
+    unsigned int shader = elf_shader_create(
         elf_io_read("./resources/test_shader.vert"),
         elf_io_read("./resources/test_shader.frag"));
     ElfModel model = elf_model_load("./resources/Sphere.fbx");
@@ -43,13 +42,13 @@ int main()
         elf_window_poll(&window, handle_elf_event);
         elf_window_clear(&window);
 
-        glUseProgram(shader.id);
+        elf_shader_use(shader);
         elf_model_draw(&model);
 
         elf_window_update(&window);
     }
 
     elf_model_free(&model);
-    elf_shader_free(&shader);
+    elf_shader_destroy(shader);
     elf_window_quit(&window);
 }

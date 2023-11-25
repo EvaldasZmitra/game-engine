@@ -1,52 +1,54 @@
 #include <elf_shader.h>
 
-float vertices[] = {
-    0.0f, 0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f};
-
-ElfShader elf_shader_create(const char *vertex_code, const char *fragment_code)
+unsigned int elf_shader_create(const char *vertex_code, const char *fragment_code)
 {
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertex_code, NULL);
-    glCompileShader(vertexShader);
+    unsigned int vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shader_id, 1, &vertex_code, NULL);
+    glCompileShader(vertex_shader_id);
 
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragment_code, NULL);
-    glCompileShader(fragmentShader);
+    unsigned int fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader_id, 1, &fragment_code, NULL);
+    glCompileShader(fragment_shader_id);
 
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
+    unsigned int shader_id = glCreateProgram();
+    glAttachShader(shader_id, vertex_shader_id);
+    glAttachShader(shader_id, fragment_shader_id);
+    glLinkProgram(shader_id);
+    glUseProgram(shader_id);
 
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, vertices, GL_STATIC_DRAW);
-
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    ElfShader shader = {
-        .id = shaderProgram,
-        .vao_id = VAO};
-
-    return shader;
+    return shader_id;
 }
 
-void elf_shader_use(const ElfShader *shader)
+void elf_shader_use(unsigned int shader_id)
 {
-    glUseProgram(shader->id);
+    glUseProgram(shader_id);
 }
 
-void elf_shader_free(const ElfShader *shader)
+void elf_shader_destroy(unsigned int shader_id)
 {
-    glDeleteVertexArrays(1, &shader->vao_id);
-    glDeleteBuffers(1, &shader->vbo_id);
-    glDeleteProgram(shader->id);
+    glDeleteProgram(shader_id);
+}
+
+void elf_shader_set_matrix4x4(unsigned int shader_id, const char *name, float *data)
+{
+    int uniform_id = glGetUniformLocation(shader_id, name);
+    glUniformMatrix4fv(uniform_id, 1, GL_FALSE, data);
+}
+
+void elf_shader_set_vec4(unsigned int shader_id, const char *name, float *data)
+{
+    int uniform_id = glGetUniformLocation(shader_id, name);
+    glUniform4fv(uniform_id, 1, data);
+}
+
+void elf_shader_set_vec3(unsigned int shader_id, const char *name, float *data)
+{
+    int uniform_id = glGetUniformLocation(shader_id, name);
+    glUniform3fv(uniform_id, 1, data);
+}
+
+void elf_shader_set_vec2(unsigned int shader_id, const char *name, float *data)
+{
+    int uniform_id = glGetUniformLocation(shader_id, name);
+    glUniform2fv(uniform_id, 1, data);
 }
