@@ -26,7 +26,11 @@
     "variant": "c",
     "glew.h": "c",
     "format": "c",
-    "memory.h": "c"
+    "memory.h": "c",
+    "elf_model.h": "c",
+    "elf_window.h": "c",
+    "elf_shader.h": "c",
+    "elf_main.h": "c"
   },
   "cSpell.words": ["Bitangents", "Lsizei"]
 }
