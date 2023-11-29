@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include <elf_math.h>
 
 inline int elf_math_min(int a, int b)
@@ -99,9 +101,9 @@ inline void elf_math_view_create(
     const float *up,
     const float *right)
 {
-    float dx = elf_math_dot_4(position, right);
-    float dy = elf_math_dot_4(position, up);
-    float dz = elf_math_dot_4(position, forward);
+    float dx = elf_math_vec3_dot(position, right);
+    float dy = elf_math_vec3_dot(position, up);
+    float dz = elf_math_vec3_dot(position, forward);
 
     matrix[0] = right[0];
     matrix[1] = right[1];

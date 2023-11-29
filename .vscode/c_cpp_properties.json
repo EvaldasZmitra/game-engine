@@ -8,7 +8,10 @@
         "C:\\msys64\\ucrt64\\include\\SDL2",
         "C:\\msys64\\ucrt64\\include\\glib-2.0",
         "C:\\msys64\\ucrt64\\lib\\glib-2.0\\include",
-        "c:\\Projects\\game-engine\\include"
+        "c:\\Projects\\game-engine\\elf-math\\include",
+        "c:\\Projects\\game-engine\\elf-example\\include",
+        "c:\\Projects\\game-engine\\elf-render\\include",
+        "c:\\Projects\\game-engine\\elf-ecs\\include"
       ]
     }
   ],

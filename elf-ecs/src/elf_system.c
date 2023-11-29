@@ -1,5 +1,4 @@
 #include <elf_system.h>
-#include <elf_math.h>
 #include <omp.h>
 #include <stdio.h>
 

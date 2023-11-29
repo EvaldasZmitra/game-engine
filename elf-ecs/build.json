@@ -1,0 +1,14 @@
+{
+  "name": "elf-ecs",
+  "compiler": "gcc",
+  "type": "dll",
+  "flags": {
+    "compiler": ["-g", "-Wall", "-W", "-O3", "-fopenmp"],
+    "linker": []
+  },
+  "libraries": [],
+  "packages": {
+    "pacman": [],
+    "apt": []
+  }
+}

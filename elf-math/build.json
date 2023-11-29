@@ -1,0 +1,14 @@
+{
+  "name": "elf-math",
+  "compiler": "gcc",
+  "type": "dll",
+  "flags": {
+    "compiler": ["-g", "-Wall", "-W", "-O3"],
+    "linker": []
+  },
+  "libraries": [],
+  "packages": {
+    "pacman": [],
+    "apt": []
+  }
+}

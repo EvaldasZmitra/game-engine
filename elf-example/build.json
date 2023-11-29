@@ -1,0 +1,15 @@
+{
+  "name": "elf-example",
+  "compiler": "gcc",
+  "type": "exe",
+  "flags": {
+    "compiler": ["-g", "-Wall", "-W"],
+    "linker": []
+  },
+  "libraries": [],
+  "packages": {
+    "pacman": [],
+    "apt": []
+  },
+  "depends-on": ["..\\elf-render", "..\\elf-ecs", "..\\elf-math"]
+}

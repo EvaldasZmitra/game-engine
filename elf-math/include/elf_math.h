@@ -1,8 +1,6 @@
 #ifndef ELF_MATH_H
 #define ELF_MATH_H
 
-#include <cglm/cglm.h>
-
 inline int elf_math_min(int a, int b);
 
 inline int elf_math_max(int a, int b);

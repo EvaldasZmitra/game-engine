@@ -1,0 +1,14 @@
+{
+  "name": "elf-render",
+  "compiler": "gcc",
+  "type": "dll",
+  "flags": {
+    "compiler": ["-g", "-Wall", "-W", "-O3"],
+    "linker": ["-lopengl32"]
+  },
+  "libraries": ["glew", "SDL2", "glib-2.0", "assimp"],
+  "packages": {
+    "pacman": [],
+    "apt": []
+  }
+}
