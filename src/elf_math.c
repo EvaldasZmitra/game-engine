@@ -1,5 +1,65 @@
 #include <elf_math.h>
 
+inline void elf_math_vec3_subtract(float *c, const float *a, const float *b)
+{
+    c[0] = a[0] - b[0];
+    c[1] = a[1] - b[1];
+    c[2] = a[2] - b[2];
+}
+
+inline void elf_math_vec3_normalize(float *vec)
+{
+    float length = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+    vec[0] = vec[0] / length;
+    vec[1] = vec[1] / length;
+    vec[2] = vec[2] / length;
+}
+
+inline void elf_math_view(
+    float *matrix,
+    float *camera,
+    float *center,
+    float *up)
+{
+    float forward[3];
+    float right[3];
+    elf_math_vec3_subtract(forward, center, camera);
+    elf_math_vec3_cross(right, up, forward);
+    elf_math_vec3_normalize(forward);
+    elf_math_vec3_normalize(right);
+
+    matrix[0] = right[0];
+    matrix[1] = up[0];
+    matrix[2] = -forward[0];
+
+    matrix[4] = right[1];
+    matrix[5] = up[1];
+    matrix[6] = -forward[1];
+
+    matrix[8] = right[2];
+    matrix[9] = up[2];
+    matrix[10] = -forward[2];
+
+    matrix[12] = -(right[0] * camera[0] + right[1] * camera[1] + right[2] * camera[2]);
+    matrix[13] = -(up[0] * camera[0] + up[1] * camera[1] + up[2] * camera[2]);
+    matrix[14] = forward[0] * camera[0] + forward[1] * camera[1] + forward[2] * camera[2];
+}
+
+inline void elf_math_project(
+    float *matrix,
+    float fov,
+    float aspectRatio,
+    float near,
+    float far)
+{
+    float focalLength = 1.0f / tan(fov * 0.5f);
+    matrix[0] = focalLength / aspectRatio;
+    matrix[5] = focalLength;
+    matrix[10] = (far + near) / (near - far);
+    matrix[11] = (2.0f * far * near) / (near - far);
+    matrix[14] = -1.0f;
+}
+
 inline int elf_math_min(int a, int b)
 {
     return a > b ? b : a;
@@ -85,6 +145,11 @@ inline float elf_math_vec3_dot(const float *a, const float *b)
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
+inline float elf_math_vec4_dot(const float *a, const float *b)
+{
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+}
+
 inline void elf_math_vec3_cross(float *result, const float *a, const float *b)
 {
     result[0] = a[1] * b[2] - a[2] * b[1];
@@ -99,9 +164,9 @@ inline void elf_math_view_create(
     const float *up,
     const float *right)
 {
-    float dx = elf_math_dot_4(position, right);
-    float dy = elf_math_dot_4(position, up);
-    float dz = elf_math_dot_4(position, forward);
+    float dx = elf_math_vec4_dot(position, right);
+    float dy = elf_math_vec4_dot(position, up);
+    float dz = elf_math_vec4_dot(position, forward);
 
     matrix[0] = right[0];
     matrix[1] = right[1];

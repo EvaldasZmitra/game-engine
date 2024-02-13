@@ -1,9 +1,16 @@
 {
   "name": "myapp",
+  "static": false,
   "compiler": "gcc",
-  "type": "exe",
   "flags": {
-    "compiler": ["-g", "-W", "-Wall", "-O0", "-fopenmp"],
+    "compiler": [
+      "-g",
+      "-W",
+      "-Wall",
+      "-O0",
+      "-fopenmp",
+      "-fdiagnostics-color=always"
+    ],
     "linker": ["-lopengl32", "-mconsole"]
   },
   "libraries": ["glew", "SDL2", "glib-2.0", "assimp"],
