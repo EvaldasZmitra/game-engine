@@ -26,7 +26,7 @@ int main()
     elf_math_project(
         projection_matrix,
         60,
-        8.0f / 6.0f,
+        8.0f / 1.0f,
         0.1f,
         100.0f);
     elf_math_view(

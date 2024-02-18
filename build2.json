@@ -1,0 +1,33 @@
+{
+  "name": "app",
+  "libraries": ["assimp", "sdl2", "glib-2.0", "glew"],
+  "compilation": {
+    "cflags": ["-g", "-W", "-Wall", "-fdiagnostics-color=always"],
+    "main": {
+      "cc": "gcc",
+      "cflags": ["-O0", "-fopenmp"],
+      "directories": ["./src"]
+    },
+    "cuda": {
+      "cc": "nvcc",
+      "directories": ["./cuda"]
+    }
+  },
+  "linking": {
+    "ldflags": [],
+    "main-exe": {
+      "ldflags": ["-lopengl32"],
+      "directories": ["./build/main", "./build/cuda"]
+    },
+    "dll": {
+      "cflags": "-shared",
+      "directories": ["./build/main"]
+    }
+  },
+  "recipes": {
+    "build-win-main": {
+      "compilation": ["main"],
+      "linking": ["main-exe"]
+    }
+  }
+}
