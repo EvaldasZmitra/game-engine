@@ -1,6 +1,6 @@
 {
+  "name": "tests",
   "cc": "gcc",
-  "name": "game-engine",
   "version": "0.0.0",
   "type": "exe",
   "cflags": [
@@ -13,5 +13,7 @@
     "-fdiagnostics-color=always"
   ],
   "ldflags": ["-lopengl32", "-fopenmp"],
-  "libs": ["glew", "sdl2", "glib-2.0", "assimp"]
+  "dirs": ["./src", "./tests"],
+  "libs": ["sdl2", "glew", "glib-2.0", "assimp"],
+  "exclude": ["elf_main.o"]
 }
