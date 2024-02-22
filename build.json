@@ -1,45 +1,17 @@
 {
-  "name": "app",
-  "libs": {
-    "glew": {
-      "name": "glew",
-      "version": "2.2.0"
-    },
-    "sdl2": {
-      "name": "sdl2",
-      "version": "2.28.4"
-    },
-    "glib": {
-      "name": "glib-2.0",
-      "version": "2.28"
-    },
-    "assimp": {
-      "name": "assimp",
-      "version": "5.3.0"
-    }
-  },
-  "objs": {
-    "src": {
-      "cc": "gcc",
-      "cflags": [
-        "-I./include",
-        "-g",
-        "-W",
-        "-Wall",
-        "-O3",
-        "-fopenmp",
-        "-fdiagnostics-color=always"
-      ],
-      "libs": ["glew", "sdl2", "glib", "assimp"]
-    }
-  },
-  "outs": {
-    "exe": {
-      "src": {
-        "cc": "gcc",
-        "ldflags": ["-lopengl32", "-fopenmp"],
-        "objs": ["src"]
-      }
-    }
-  }
+  "cc": "gcc",
+  "version": "0.0.0",
+  "type": "exe",
+  "cflags": [
+    "-I./include",
+    "-g",
+    "-W",
+    "-Wall",
+    "-O3",
+    "-fopenmp",
+    "-fdiagnostics-color=always"
+  ],
+  "ldflags": ["-lopengl32", "-fopenmp"],
+  "lib-dirs": [],
+  "libs": ["glew", "sdl2", "glib-2.0", "assimp"]
 }
