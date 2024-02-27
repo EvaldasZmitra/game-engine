@@ -1,8 +1,6 @@
 #ifndef ELF_MATH_H
 #define ELF_MATH_H
 
-#include <cglm/cglm.h>
-
 void elf_math_vec3_normalize(float *vec);
 
 int elf_math_min(int a, int b);

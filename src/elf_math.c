@@ -1,4 +1,5 @@
 #include <elf_math.h>
+#include <math.h>
 
 inline void elf_math_vec3_subtract(float *c, const float *a, const float *b)
 {
