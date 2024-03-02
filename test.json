@@ -1,7 +1,5 @@
 {
   "name": "tests",
-  "cc": "gcc",
-  "version": "0.0.0",
   "type": "exe",
   "cflags": [
     "-I./include",
@@ -14,6 +12,6 @@
   ],
   "ldflags": ["-lopengl32", "-fopenmp"],
   "dirs": ["./src", "./tests"],
-  "libs": ["sdl2", "glew", "glib-2.0", "assimp"],
-  "exclude": ["elf_main.o"]
+  "libs": ["glew", "glib-2.0", "assimp"],
+  "exclude": ["elf_main.o", "elf_window.o"]
 }

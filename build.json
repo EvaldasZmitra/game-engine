@@ -1,7 +1,5 @@
 {
-  "cc": "gcc",
   "name": "game-engine",
-  "version": "0.0.0",
   "type": "exe",
   "cflags": [
     "-I./include",
