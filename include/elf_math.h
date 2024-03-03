@@ -57,4 +57,9 @@ void elf_math_view(
     float *camera,
     float *center,
     float *up);
+
+void elf_math_matrix_4x4_vec4_multiply(
+    float *result,
+    const float *matrix1,
+    const float *vector);
 #endif

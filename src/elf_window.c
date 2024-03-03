@@ -7,7 +7,7 @@ ElfWindow elf_window_init()
         fprintf(stderr, "SDL initialization failed: %s\n", SDL_GetError());
     }
 
-    SDL_Window *window = SDL_CreateWindow("OpenGL Triangle", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
+    SDL_Window *window = SDL_CreateWindow("OpenGL Triangle", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_OPENGL);
     if (!window)
     {
         fprintf(stderr, "Failed to create SDL window: %s\n", SDL_GetError());
@@ -23,6 +23,9 @@ ElfWindow elf_window_init()
 
     ElfWindow elf_window = {
         .window = window};
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     return elf_window;
 }
 

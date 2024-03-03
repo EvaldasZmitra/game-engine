@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.pdf": "latex",
     "elf_render_object.h": "c",
     "elf_state.h": "c",
     "elf_entity.h": "c",
@@ -30,7 +31,11 @@
     "elf_model.h": "c",
     "elf_window.h": "c",
     "elf_shader.h": "c",
-    "elf_main.h": "c"
+    "elf_main.h": "c",
+    "validate.h": "c",
+    "elf_math_tests.h": "c",
+    "elf_loader.h": "c",
+    "stdlib.h": "c"
   },
   "cSpell.words": ["Bitangents", "Lsizei"]
 }

@@ -22,4 +22,6 @@ void elf_math_vec3_normalize_test()
     assert_vec3_approx((float[]){0.58f, 0.58f, 0.58f}, result, 0.1f);
 }
 
-
+void elf_math_project_test()
+{
+}

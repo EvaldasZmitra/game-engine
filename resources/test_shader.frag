@@ -2,6 +2,13 @@
 
 out vec4 FragColor;
 
+in vec3 norm;
+in vec2 uv;
+
+uniform sampler2D myTextureSampler;
+
 void main() {
-   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+   vec3 light_dir = vec3(0, 0, 1);
+   float c = dot(-light_dir, norm);
+   FragColor = texture( myTextureSampler, uv ) * c;
 };

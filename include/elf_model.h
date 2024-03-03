@@ -1,11 +1,18 @@
 #ifndef ELF_MODEL_H
 #define ELF_MODEL_H
+#include <elf_material.h>
 
 enum ModelLocation
 {
     VERTICES,
-    COLORS,
-    TEXTURE_COORDS,
+    TEXTURE_COORDS_0,
+    TEXTURE_COORDS_1,
+    TEXTURE_COORDS_2,
+    TEXTURE_COORDS_3,
+    TEXTURE_COORDS_4,
+    TEXTURE_COORDS_5,
+    TEXTURE_COORDS_6,
+    TEXTURE_COORDS_7,
     NORMALS,
     TANGENTS,
     BIT_TANGENTS,
@@ -23,10 +30,17 @@ typedef struct ElfModel
 
 } ElfModel;
 
-ElfModel elf_model_load(const char *path);
+typedef struct ElfModels
+{
+    unsigned int num_models;
+    ElfModel *models;
+} ElfModels;
+
+ElfModels elf_model_load(const char *path);
 void elf_model_free(ElfModel *model);
 
 void elf_model_draw_instanced(ElfModel *model, int num_instances);
 void elf_model_draw(ElfModel *model);
+void elf_model_use_material(ElfMaterial *elf_material);
 
 #endif
