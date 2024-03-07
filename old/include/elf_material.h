@@ -3,11 +3,11 @@
 
 #include "elf_texture.h"
 
-typedef struct ElfMaterial
+typedef struct elf_material
 {
     unsigned int num_textures;
-    ElfTexture *textures;
-    unsigned int shader;
-} ElfMaterial;
+    elf_texture *textures;
+    unsigned int shader_id;
+} elf_material;
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef ELF_MODEL_H
 #define ELF_MODEL_H
 #include <elf_material.h>
+#include <elf_transform.h>
 
 enum ModelLocation
 {
@@ -27,7 +28,7 @@ typedef struct ElfModel
     unsigned int vao;
     unsigned int buffers[NUM_BUFFERS];
     unsigned int num_indices;
-
+    ElfTransform transform;
 } ElfModel;
 
 typedef struct ElfModels
@@ -40,7 +41,8 @@ ElfModels elf_model_load(const char *path);
 void elf_model_free(ElfModel *model);
 
 void elf_model_draw_instanced(ElfModel *model, int num_instances);
-void elf_model_draw(ElfModel *model);
-void elf_model_use_material(ElfMaterial *elf_material);
+void elf_model_draw(ElfModel *model, unsigned int shader);
+void elf_model_use_material(elf_material *elf_material);
+void elf_model_bind_shader(ElfModel *model, unsigned int shader);
 
 #endif

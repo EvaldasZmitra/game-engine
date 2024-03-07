@@ -35,7 +35,31 @@
     "validate.h": "c",
     "elf_math_tests.h": "c",
     "elf_loader.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "elf_camera.h": "c",
+    "elf_material.h": "c",
+    "sdl_image.h": "c",
+    "array": "c",
+    "string": "c",
+    "string_view": "c",
+    "span": "c",
+    "charconv": "c",
+    "compare": "c",
+    "tuple": "c",
+    "type_traits": "c",
+    "utility": "c",
+    "mesh.h": "c",
+    "material.h": "c",
+    "anim.h": "c"
   },
-  "cSpell.words": ["Bitangents", "Lsizei"]
+  "cSpell.words": [
+    "Bitangents",
+    "GPOINTER",
+    "lookat",
+    "Lsizei",
+    "Lsizeiptr",
+    "Numn",
+    "Programiv",
+    "Shaderiv"
+  ]
 }

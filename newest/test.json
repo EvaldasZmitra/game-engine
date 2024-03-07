@@ -1,0 +1,17 @@
+{
+  "type": "exe",
+  "name": "test",
+  "cflags": [
+    "-I./include",
+    "-g",
+    "-W",
+    "-Wall",
+    "-O3",
+    "-fopenmp",
+    "-fdiagnostics-color=always"
+  ],
+  "dirs": ["./src", "./tests"],
+  "ldflags": [],
+  "libs": [],
+  "exclude": ["main.o"]
+}

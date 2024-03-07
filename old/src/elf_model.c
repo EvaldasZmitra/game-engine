@@ -1,10 +1,20 @@
 #include <stdlib.h>
 #include <memory.h>
-
 #include <GL/glew.h>
 #include <stdio.h>
-
 #include <elf_model.h>
+#include <cglm/cglm.h>
+
+void elf_model_bind_shader(ElfModel *model, unsigned int shader)
+{
+    mat4 modelm = GLM_MAT4_IDENTITY_INIT;
+    glm_translate(modelm, model->transform.position);
+    glm_rotate(modelm, glm_rad(model->transform.rotation[0]), (vec3){1, 0, 0});
+    glm_rotate(modelm, glm_rad(model->transform.rotation[1]), (vec3){0, 1, 0});
+    glm_rotate(modelm, glm_rad(model->transform.rotation[2]), (vec3){0, 0, 1});
+    glm_scale(modelm, model->transform.scale);
+    elf_shader_set_matrix4x4(shader, "m", &modelm[0][0]);
+}
 
 void elf_model_free(ElfModel *model)
 {
@@ -12,9 +22,16 @@ void elf_model_free(ElfModel *model)
     glDeleteVertexArrays(1, &model->vao);
 }
 
-void elf_model_draw(ElfModel *model)
+void elf_model_draw(ElfModel *model, unsigned int shader)
 {
     glBindVertexArray(model->vao);
+    mat4 modelm = GLM_MAT4_IDENTITY_INIT;
+    glm_translate(modelm, model->transform.position);
+    glm_rotate(modelm, glm_rad(model->transform.rotation[0]), (vec3){1, 0, 0});
+    glm_rotate(modelm, glm_rad(model->transform.rotation[1]), (vec3){0, 1, 0});
+    glm_rotate(modelm, glm_rad(model->transform.rotation[2]), (vec3){0, 0, 1});
+    glm_scale(modelm, model->transform.scale);
+    elf_shader_set_matrix4x4(shader, "m", &modelm[0][0]);
     glDrawElements(GL_TRIANGLES, model->num_indices, GL_UNSIGNED_INT, NULL);
     glBindVertexArray(0);
 }
