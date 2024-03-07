@@ -10,9 +10,9 @@ typedef struct elf_anim_bone
     vec3 position;
     vec4 position;
     vec3 scale;
-};
+} elf_anim_bone;
 
-typedef struct elf_anim 
+typedef struct elf_anim
 {
     GLchar *name;
     GLdouble ticks_per_second;
@@ -20,8 +20,8 @@ typedef struct elf_anim
     elf_anim_bone *bones;
 };
 
-typedef struct elf_mdl 
-{    
+typedef struct elf_mdl
+{
     GLchar *name;
     GLfloat *vertices;
     GLfloat *texture_coords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
@@ -36,11 +36,13 @@ typedef struct elf_mdl
     GLuint num_vertices;
 };
 
-typedef struct elf_shd 
-{    
+typedef struct elf_shd
+{
     GLchar *name;
-    GLubyte* binary_data;
-};
+    GLenum format;
+    GLubyte *binary_data;
+    GLint binary_length;
+} elf_shd;
 
 typedef struct elf_bone
 {
@@ -50,14 +52,15 @@ typedef struct elf_bone
     mat4 offset;
 } elf_bone;
 
-typedef struct elf_skel 
+typedef struct elf_skel
 {
     GLchar *name;
     elf_bone *bones;
 };
 
-typedef struct elf_tex 
+typedef struct elf_tex
 {
+    GLchar *name;
     unsigned int height;
     unsigned int width;
     unsigned int linear_size;
@@ -65,7 +68,6 @@ typedef struct elf_tex
     unsigned int four_cc;
     unsigned char *buffer;
 };
-
 
 void elf_import_mdl();
 void elf_import_tex();

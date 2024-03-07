@@ -13,7 +13,8 @@
         "c:\\Projects\\game-engine\\elf-phys\\include",
         "c:\\Projects\\game-engine\\elf-rend\\include",
         "c:\\Projects\\game-engine\\newest\\include",
-        "C:\\msys64\\ucrt64\\include\\SDL"
+        "C:\\msys64\\ucrt64\\include\\SDL",
+        "C:\\msys64\\ucrt64\\include\\ImageMagick-7"
       ]
     }
   ],

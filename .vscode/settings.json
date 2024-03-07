@@ -50,7 +50,8 @@
     "utility": "c",
     "mesh.h": "c",
     "material.h": "c",
-    "anim.h": "c"
+    "anim.h": "c",
+    "magickwand.h": "c"
   },
   "cSpell.words": [
     "Bitangents",
