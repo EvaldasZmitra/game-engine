@@ -6,7 +6,6 @@
     "-g",
     "-W",
     "-Wall",
-    "-O3",
     "-fopenmp",
     "-fdiagnostics-color=always"
   ],

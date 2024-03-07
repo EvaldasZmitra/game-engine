@@ -4,6 +4,8 @@
 
 int main()
 {
-    elf_load_model("./test.fbx", aiProcessPreset_TargetRealtime_MaxQuality);
+    elf_load_model(
+        "C:\\Projects\\game-engine\\newest\\src\\model.fbx",
+        aiProcessPreset_TargetRealtime_MaxQuality);
     return 0;
 }

@@ -4,7 +4,7 @@
       "name": "DebugTemp",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceRoot}\\test\\build\\main.exe",
+      "program": "${workspaceRoot}\\newest\\build\\main.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

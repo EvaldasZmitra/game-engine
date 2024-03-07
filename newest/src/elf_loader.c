@@ -246,190 +246,166 @@ elf_model elf_load_model(const char *path, unsigned int flags)
 {
     const scene *scene = aiImportFile(path, flags);
     elf_model model;
-    model.meshes = malloc(scene->mNumMeshes * sizeof(elf_mesh));
-    model.skeletons = malloc(scene->mNumSkeletons * sizeof(elf_skeleton));
-
-    for (unsigned int i = 0; i < scene->mNumMaterials; i++)
-    {
-        material *material = &scene->mMaterials[i];
-        material->mNumAllocated;
-        for (unsigned int i = 0; i < material->mNumProperties; i++)
-        {
-            property *property = material->mProperties[i];
-            property->mData;
-            property->mDataLength;
-            property->mIndex;
-            property->mKey;
-            property->mSemantic;
-            property->mType;
-        }
-    }
     int current_bone_id = 0;
     GHashTable *bones = g_hash_table_new(g_str_hash, g_str_equal);
-    for (unsigned int i = 0; i < scene->mNumSkeletons; i++)
+    if (scene->mNumMeshes > 0)
     {
-        skeleton *skeleton = &scene->mSkeletons[i];
-        elf_skeleton *elf_skeleton = &model.skeletons[i];
-        elf_skeleton->name = malloc(skeleton->mName.length * sizeof(GLchar));
-        memcpy(elf_skeleton->name, skeleton->mName.data, skeleton->mName.length * sizeof(GLchar));
-        elf_skeleton->bones = malloc(skeleton->mNumBones * sizeof(elf_bone));
-        for (unsigned int y = 0; y < skeleton->mNumBones; i++, current_bone_id++)
+        model.meshes = malloc(scene->mNumMeshes * sizeof(elf_mesh));
+        for (unsigned int i = 0; i < scene->mNumMeshes; i++)
         {
-            skeletal_bone *bone = &skeleton->mBones[y];
-            elf_bone *elf_bone = &elf_skeleton->bones[y];
-            size_t bone_name_size = bone->mNode->mName.length * sizeof(GLchar);
-            elf_bone->name = malloc(bone_name_size);
-            memcpy(elf_bone->name, bone->mNode->mName.data, bone_name_size);
-
-            bone->mLocalMatrix;
-            bone->mOffsetMatrix;
-            bone->mParent;
-
-            g_hash_table_insert(
-                bones,
-                bone->mNode->mName.data,
-                GINT_TO_POINTER(current_bone_id));
-        }
-    }
-    for (unsigned int i = 0; i < scene->mNumMeshes; i++)
-    {
-        mesh *mesh = &scene->mMeshes[i];
-        elf_mesh *elf_mesh;
-        elf_mesh->name = malloc(mesh->mName.length * sizeof(char));
-        memcpy(elf_mesh->name, mesh->mName.data, mesh->mName.length * sizeof(char));
-        elf_mesh->vertices = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
-        elf_mesh->indices = malloc(mesh->mNumFaces * 3 * sizeof(GLuint));
-        if (mesh->mBones != NULL)
-        {
-            elf_mesh->weights = malloc(mesh->mNumVertices * 4 * sizeof(GLint));
-            elf_mesh->bone_ids = malloc(mesh->mNumVertices * 4 * sizeof(GLint));
-        }
-        if (mesh->mNormals != NULL)
-        {
-            elf_mesh->normals = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
-        }
-        if (mesh->mTangents != NULL)
-        {
-            elf_mesh->tangents = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
-        }
-        if (mesh->mBitangents != NULL)
-        {
-            elf_mesh->bit_tangents = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
-        }
-        for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_COLOR_SETS; u++)
-        {
-            if (mesh->mColors[u] != NULL)
-            {
-                elf_mesh->colors[u] = malloc(4 * mesh->mNumVertices * sizeof(GLfloat));
-            }
-        }
-        for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_TEXTURECOORDS; u++)
-        {
-            if (mesh->mTextureCoords[u] != NULL)
-            {
-                elf_mesh->colors[u] = malloc(mesh->mNumUVComponents[u] * mesh->mNumVertices * sizeof(GLfloat));
-            }
-        }
-        for (unsigned int y = 0; y < mesh->mNumVertices; y++)
-        {
-            elf_mesh->vertices[y * 3] = mesh->mVertices[y].x;
-            elf_mesh->vertices[y * 3 + 1] = mesh->mVertices[y].y;
-            elf_mesh->vertices[y * 3 + 2] = mesh->mVertices[y].z;
-
-            if (mesh->mNormals != NULL)
-            {
-                elf_mesh->normals[y * 3] = mesh->mNormals[y].x;
-                elf_mesh->normals[y * 3 + 1] = mesh->mNormals[y].y;
-                elf_mesh->normals[y * 3 + 2] = mesh->mNormals[y].z;
-            }
-
-            if (mesh->mTangents != NULL)
-            {
-                elf_mesh->tangents[y * 3] = mesh->mTangents[y].x;
-                elf_mesh->tangents[y * 3 + 1] = mesh->mTangents[y].y;
-                elf_mesh->tangents[y * 3 + 2] = mesh->mTangents[y].z;
-            }
-
-            if (mesh->mBitangents != NULL)
-            {
-                elf_mesh->bit_tangents[y * 3] = mesh->mBitangents[y].x;
-                elf_mesh->bit_tangents[y * 3 + 1] = mesh->mBitangents[y].y;
-                elf_mesh->bit_tangents[y * 3 + 2] = mesh->mBitangents[y].z;
-            }
-
+            mesh *mesh = scene->mMeshes[i];
+            elf_mesh *elf_mesh = &model.meshes[i];
+            elf_mesh->name = malloc(mesh->mName.length * sizeof(char));
+            memcpy(elf_mesh->name, mesh->mName.data, mesh->mName.length * sizeof(char));
+            elf_mesh->vertices = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
+            elf_mesh->indices = malloc(mesh->mNumFaces * 3 * sizeof(GLuint));
             if (mesh->mBones != NULL)
             {
-                elf_mesh->weights[y * 3] = 0;
-                elf_mesh->weights[y * 3 + 1] = 0;
-                elf_mesh->weights[y * 3 + 2] = 0;
-
-                elf_mesh->bone_ids[y * 3] = -1;
-                elf_mesh->bone_ids[y * 3 + 1] = -1;
-                elf_mesh->bone_ids[y * 3 + 2] = -1;
+                elf_mesh->weights = malloc(mesh->mNumVertices * 4 * sizeof(GLint));
+                elf_mesh->bone_ids = malloc(mesh->mNumVertices * 4 * sizeof(GLint));
             }
-
-            for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_TEXTURECOORDS; u++)
+            if (mesh->mNormals != NULL)
             {
-                if (mesh->mTextureCoords[u] != NULL)
-                {
-                    unsigned int num_components = mesh->mNumUVComponents[u];
-                    for (unsigned int v = 0; v < num_components; v++)
-                    {
-                        if (v == 0)
-                        {
-                            elf_mesh->texture_coords[u][y * num_components] = mesh->mTextureCoords[u][y].x;
-                        }
-                        if (v == 1)
-                        {
-                            elf_mesh->texture_coords[u][y * num_components + 1] = mesh->mTextureCoords[u][y].y;
-                        }
-                        if (v == 2)
-                        {
-                            elf_mesh->texture_coords[u][y * num_components + 2] = mesh->mTextureCoords[u][y].z;
-                        }
-                    }
-                }
+                elf_mesh->normals = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
             }
-
+            if (mesh->mTangents != NULL)
+            {
+                elf_mesh->tangents = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
+            }
+            if (mesh->mBitangents != NULL)
+            {
+                elf_mesh->bit_tangents = malloc(mesh->mNumVertices * 3 * sizeof(GLfloat));
+            }
             for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_COLOR_SETS; u++)
             {
                 if (mesh->mColors[u] != NULL)
                 {
-                    elf_mesh->colors[u][y * 4] = mesh->mColors[u][y].r;
-                    elf_mesh->colors[u][y * 4 + 1] = mesh->mColors[u][y].g;
-                    elf_mesh->colors[u][y * 4 + 2] = mesh->mColors[u][y].b;
-                    elf_mesh->colors[u][y * 4 + 3] = mesh->mColors[u][y].a;
+                    elf_mesh->colors[u] = malloc(4 * mesh->mNumVertices * sizeof(GLfloat));
                 }
             }
-        }
-        for (unsigned int y = 0; y < mesh->mNumBones; y++)
-        {
-            bone *bone = &mesh->mBones[y];
-            if (g_hash_table_contains(bones, bone->mName.data))
+            for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_TEXTURECOORDS; u++)
             {
-                GLint bone_id = GPOINTER_TO_INT(g_hash_table_lookup(bones, bone->mName.data));
-                for (unsigned int u = 0; u < bone->mNumWeights; u++)
+                if (mesh->mTextureCoords[u] != NULL)
                 {
-                    weight *weight = &bone->mWeights[u];
-                    for (unsigned v = 0; v < 4; v++)
+                    elf_mesh->texture_coords[u] = malloc(mesh->mNumUVComponents[u] * mesh->mNumVertices * sizeof(GLfloat));
+                }
+            }
+            for (unsigned int y = 0; y < mesh->mNumVertices; y++)
+            {
+                elf_mesh->vertices[y * 3] = mesh->mVertices[y].x;
+                elf_mesh->vertices[y * 3 + 1] = mesh->mVertices[y].y;
+                elf_mesh->vertices[y * 3 + 2] = mesh->mVertices[y].z;
+
+                if (mesh->mNormals != NULL)
+                {
+                    elf_mesh->normals[y * 3] = mesh->mNormals[y].x;
+                    elf_mesh->normals[y * 3 + 1] = mesh->mNormals[y].y;
+                    elf_mesh->normals[y * 3 + 2] = mesh->mNormals[y].z;
+                }
+
+                if (mesh->mTangents != NULL)
+                {
+                    elf_mesh->tangents[y * 3] = mesh->mTangents[y].x;
+                    elf_mesh->tangents[y * 3 + 1] = mesh->mTangents[y].y;
+                    elf_mesh->tangents[y * 3 + 2] = mesh->mTangents[y].z;
+                }
+
+                if (mesh->mBitangents != NULL)
+                {
+                    elf_mesh->bit_tangents[y * 3] = mesh->mBitangents[y].x;
+                    elf_mesh->bit_tangents[y * 3 + 1] = mesh->mBitangents[y].y;
+                    elf_mesh->bit_tangents[y * 3 + 2] = mesh->mBitangents[y].z;
+                }
+
+                if (mesh->mBones != NULL)
+                {
+                    elf_mesh->weights[y * 3] = 0;
+                    elf_mesh->weights[y * 3 + 1] = 0;
+                    elf_mesh->weights[y * 3 + 2] = 0;
+
+                    elf_mesh->bone_ids[y * 3] = -1;
+                    elf_mesh->bone_ids[y * 3 + 1] = -1;
+                    elf_mesh->bone_ids[y * 3 + 2] = -1;
+                }
+
+                for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_TEXTURECOORDS; u++)
+                {
+                    if (mesh->mTextureCoords[u] != NULL)
                     {
-                        unsigned int ind = weight->mVertexId * 4 + v;
-                        if (elf_mesh->indices[ind] == -1)
+                        unsigned int num_components = mesh->mNumUVComponents[u];
+                        for (unsigned int v = 0; v < num_components; v++)
                         {
-                            elf_mesh->weights[ind] = weight->mVertexId;
-                            elf_mesh->bone_ids[ind] = bone_id;
+                            if (v == 0)
+                            {
+                                elf_mesh->texture_coords[u][y * num_components] = mesh->mTextureCoords[u][y].x;
+                            }
+                            if (v == 1)
+                            {
+                                elf_mesh->texture_coords[u][y * num_components + 1] = mesh->mTextureCoords[u][y].y;
+                            }
+                            if (v == 2)
+                            {
+                                elf_mesh->texture_coords[u][y * num_components + 2] = mesh->mTextureCoords[u][y].z;
+                            }
+                        }
+                    }
+                }
+
+                for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_COLOR_SETS; u++)
+                {
+                    if (mesh->mColors[u] != NULL)
+                    {
+                        elf_mesh->colors[u][y * 4] = mesh->mColors[u][y].r;
+                        elf_mesh->colors[u][y * 4 + 1] = mesh->mColors[u][y].g;
+                        elf_mesh->colors[u][y * 4 + 2] = mesh->mColors[u][y].b;
+                        elf_mesh->colors[u][y * 4 + 3] = mesh->mColors[u][y].a;
+                    }
+                }
+            }
+            for (unsigned int y = 0; y < mesh->mNumBones; y++)
+            {
+                bone *bone = &mesh->mBones[y];
+                if (g_hash_table_contains(bones, bone->mName.data))
+                {
+                    GLint bone_id = GPOINTER_TO_INT(g_hash_table_lookup(bones, bone->mName.data));
+                    for (unsigned int u = 0; u < bone->mNumWeights; u++)
+                    {
+                        weight *weight = &bone->mWeights[u];
+                        for (unsigned v = 0; v < 4; v++)
+                        {
+                            unsigned int ind = weight->mVertexId * 4 + v;
+                            if (elf_mesh->indices[ind] == -1)
+                            {
+                                elf_mesh->weights[ind] = weight->mVertexId;
+                                elf_mesh->bone_ids[ind] = bone_id;
+                            }
                         }
                     }
                 }
             }
-        }
-        for (unsigned int y = 0; y < mesh->mNumFaces; y++)
-        {
-            face *face = &mesh->mFaces[y];
-            for (unsigned int u = 0; u < face->mNumIndices; u++)
+            for (unsigned int y = 0; y < mesh->mNumFaces; y++)
             {
-                elf_mesh->indices[y * 3 + y] = face->mIndices[u];
+                face *face = &mesh->mFaces[y];
+                for (unsigned int u = 0; u < face->mNumIndices; u++)
+                {
+                    elf_mesh->indices[y * 3 + y] = face->mIndices[u];
+                }
             }
+        }
+    }
+    if (scene->mNumTextures > 0)
+    {
+        model.texture = malloc(sizeof(scene->mNumTextures * sizeof(elf_texture)));
+        for (unsigned int i = 0; i < scene->mNumTextures; i++)
+        {
+            texture *texture = scene->mTextures[i];
+            elf_texture *elf_texture = &model.texture[i];
+
+            texture->achFormatHint;
+            texture->mFilename;
+            texture->mHeight;
+            texture->mWidth;
+            texture->pcData;
         }
     }
     for (unsigned int i = 0; i < scene->mNumTextures; i++)
@@ -505,3 +481,47 @@ elf_model elf_load_model(const char *path, unsigned int flags)
     }
     return model;
 }
+
+// for (unsigned int i = 0; i < scene->mNumSkeletons; i++)
+// {
+//     skeleton *skeleton = &scene->mSkeletons[i];
+//     elf_skeleton *elf_skeleton = &model.skeletons[i];
+//     elf_skeleton->name = malloc(skeleton->mName.length * sizeof(GLchar));
+//     memcpy(elf_skeleton->name, skeleton->mName.data, skeleton->mName.length * sizeof(GLchar));
+//     elf_skeleton->bones = malloc(skeleton->mNumBones * sizeof(elf_bone));
+//     for (unsigned int y = 0; y < skeleton->mNumBones; i++, current_bone_id++)
+//     {
+//         skeletal_bone *bone = &skeleton->mBones[y];
+//         elf_bone *elf_bone = &elf_skeleton->bones[y];
+//         size_t bone_name_size = bone->mNode->mName.length * sizeof(GLchar);
+//         elf_bone->name = malloc(bone_name_size);
+//         memcpy(elf_bone->name, bone->mNode->mName.data, bone_name_size);
+
+//         elf_bone->offset[0][0] = bone->mOffsetMatrix.a1;
+//         elf_bone->offset[0][1] = bone->mOffsetMatrix.a2;
+//         elf_bone->offset[0][2] = bone->mOffsetMatrix.a3;
+//         elf_bone->offset[0][3] = bone->mOffsetMatrix.a4;
+
+//         elf_bone->offset[1][0] = bone->mOffsetMatrix.b1;
+//         elf_bone->offset[1][1] = bone->mOffsetMatrix.b2;
+//         elf_bone->offset[1][2] = bone->mOffsetMatrix.b3;
+//         elf_bone->offset[1][3] = bone->mOffsetMatrix.b4;
+
+//         elf_bone->offset[2][0] = bone->mOffsetMatrix.c1;
+//         elf_bone->offset[2][1] = bone->mOffsetMatrix.c2;
+//         elf_bone->offset[2][2] = bone->mOffsetMatrix.c3;
+//         elf_bone->offset[2][3] = bone->mOffsetMatrix.c4;
+
+//         elf_bone->offset[3][0] = bone->mOffsetMatrix.d1;
+//         elf_bone->offset[3][1] = bone->mOffsetMatrix.d2;
+//         elf_bone->offset[3][2] = bone->mOffsetMatrix.d3;
+//         elf_bone->offset[3][3] = bone->mOffsetMatrix.d4;
+
+//         elf_bone->parent_id = bone->mParent;
+
+//         g_hash_table_insert(
+//             bones,
+//             bone->mNode->mName.data,
+//             GINT_TO_POINTER(current_bone_id));
+//     }
+// }
