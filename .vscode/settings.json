@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    ".fantomasignore": "ignore",
     "*.pdf": "latex",
     "elf_render_object.h": "c",
     "elf_state.h": "c",
@@ -51,7 +52,10 @@
     "mesh.h": "c",
     "material.h": "c",
     "anim.h": "c",
-    "magickwand.h": "c"
+    "magickwand.h": "c",
+    "sstream": "c",
+    "stat.h": "c",
+    "sdl.h": "c"
   },
   "cSpell.words": [
     "Bitangents",

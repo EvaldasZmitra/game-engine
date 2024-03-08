@@ -12,7 +12,6 @@ out vec3 norm;
 out vec2 uv;
 
 void main() {
-   vec3 a = getv();
    norm = (m * vec4(aNorm, 0)).xyz;
    gl_Position = p * v * m * vec4(aPos, 1.0);
    uv = vertexUV;
