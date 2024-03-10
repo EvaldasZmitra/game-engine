@@ -132,189 +132,39 @@ void elf_load_program(
     elf_append_buffer(path, data, size);
 }
 
-void elf_load_model(
-    const elf_str *path,
-    const elf_str *replace,
-    unsigned int flags)
+GHashTable *elf_index_bones(const scene *scene)
 {
-    const scene *scene = aiImportFile(path->chars, flags);
-    int current_bone_id = 0;
     GHashTable *bones = g_hash_table_new(g_str_hash, g_str_equal);
-    if (scene->mNumMeshes > 0)
+    int current_bone_id = 0;
+    for (unsigned int i = 0; i < scene->mNumMeshes; i++)
     {
-        for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+        mesh *mesh = scene->mMeshes[i];
+        for (unsigned int y = 0; y < mesh->mNumBones; y++)
         {
-            mesh *mesh = scene->mMeshes[i];
-            for (unsigned int y = 0; y < mesh->mNumBones; y++)
+            bone *bone = mesh->mBones[y];
+            if (!g_hash_table_contains(bones, bone->mName.data))
             {
-                bone *bone = mesh->mBones[y];
-                if (!g_hash_table_contains(bones, bone->mName.data))
-                {
-                    g_hash_table_insert(
-                        bones,
-                        bone->mName.data,
-                        GINT_TO_POINTER(current_bone_id));
-                    current_bone_id++;
-                }
+                g_hash_table_insert(
+                    bones,
+                    bone->mName.data,
+                    GINT_TO_POINTER(current_bone_id));
+                current_bone_id++;
             }
-        }
-        for (unsigned int i = 0; i < scene->mNumMeshes; i++)
-        {
-            mesh *mesh = scene->mMeshes[i];
-            elf_str mdl_name = elf_str_init_null("/mdl/", 1024);
-            elf_str mesh_name = elf_str_init(mesh->mName.data, mesh->mName.length);
-            elf_str mdl_path = elf_str_add(replace, &mdl_name);
-            elf_str this_mdl_path = elf_str_add(&mdl_path, &mesh_name);
-
-            // Vertices
-            elf_str vertex_name = elf_str_init_null("/vertex", 1024);
-            elf_str this_vertex_path = elf_str_add(&this_mdl_path, &vertex_name);
-            elf_write_buffer(
-                &this_vertex_path,
-                &mesh->mVertices[0].x,
-                mesh->mNumVertices * 3 * sizeof(float));
-
-            // Normals
-            elf_str normal_name = elf_str_init_null("/normal", 1024);
-            elf_str this_normal_path = elf_str_add(&this_mdl_path, &normal_name);
-            elf_write_buffer(
-                &this_normal_path,
-                &mesh->mNormals[0].x,
-                mesh->mNumVertices * 3 * sizeof(float));
-
-            // Tangents
-            elf_str tangent_name = elf_str_init_null("/tangent", 1024);
-            elf_str this_tangent_path = elf_str_add(&this_mdl_path, &tangent_name);
-            elf_write_buffer(
-                &this_tangent_path,
-                &mesh->mTangents[0].x,
-                mesh->mNumVertices * 3 * sizeof(float));
-
-            // Bit tangents
-            elf_str bit_tangent_name = elf_str_init_null("/bit_tangent", 1024);
-            elf_str this_bit_tangent_path = elf_str_add(&this_mdl_path, &bit_tangent_name);
-            elf_write_buffer(
-                &this_bit_tangent_path,
-                &mesh->mBitangents[0].x,
-                mesh->mNumVertices * 3 * sizeof(float));
-
-            // Faces
-            elf_str index_name = elf_str_init_null("/index", 1024);
-            elf_str this_index_path = elf_str_add(&this_mdl_path, &index_name);
-            unsigned int indices_size = mesh->mNumFaces * 3 * sizeof(unsigned int);
-            unsigned int *indices = malloc(indices_size);
-            for (unsigned int y = 0; y < mesh->mNumFaces; y++)
-            {
-                face *face = &mesh->mFaces[y];
-                for (unsigned int u = 0; u < face->mNumIndices; u++)
-                {
-                    indices[y * 3 + u] = face->mIndices[u];
-                }
-            }
-            elf_write_buffer(&this_index_path, indices, indices_size);
-            free(indices);
-
-            // Tex Coords
-            for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_TEXTURECOORDS; u++)
-            {
-                if (mesh->mTextureCoords[u] != NULL)
-                {
-                    unsigned int num_components = mesh->mNumUVComponents[u];
-                    unsigned int coords_size = mesh->mNumUVComponents[u] * mesh->mNumVertices * sizeof(GLfloat);
-                    GLfloat *coords = malloc(coords_size);
-                    for (unsigned int y = 0; y < mesh->mNumVertices; y++)
-                    {
-                        for (unsigned int v = 0; v < num_components; v++)
-                        {
-                            if (v == 0)
-                            {
-                                coords[y * num_components] = mesh->mTextureCoords[u][y].x;
-                            }
-                            if (v == 1)
-                            {
-                                coords[y * num_components + 1] = mesh->mTextureCoords[u][y].y;
-                            }
-                            if (v == 2)
-                            {
-                                coords[y * num_components + 2] = mesh->mTextureCoords[u][y].z;
-                            }
-                        }
-                    }
-                    elf_str tex_name = elf_str_init_null("/tex", 1024);
-                    char str[10];
-                    sprintf(str, "%d", u);
-                    elf_str tex_ind = elf_str_init_null(str, 1024);
-                    elf_str tex_full = elf_str_add(&tex_name, &tex_ind);
-
-                    elf_str this_tex_path = elf_str_add(&this_mdl_path, &tex_full);
-                    elf_write_buffer(&this_tex_path, coords, coords_size);
-                    elf_str_free(&this_tex_path);
-                    elf_str_free(&tex_ind);
-                    elf_str_free(&tex_full);
-                    elf_str_free(&tex_name);
-                }
-            }
-
-            // Bones
-            unsigned int bone_size = mesh->mNumVertices * sizeof(GLfloat) * 4;
-            GLfloat *bone_weights = malloc(bone_size);
-            GLuint *bone_ids = malloc(bone_size);
-            for (unsigned int y = 0; y < mesh->mNumBones; y++)
-            {
-                bone *bone = &mesh->mBones[y];
-                if (g_hash_table_contains(bones, bone->mName.data))
-                {
-                    GLint bone_id = GPOINTER_TO_INT(g_hash_table_lookup(bones, bone->mName.data));
-                    for (unsigned int u = 0; u < bone->mNumWeights; u++)
-                    {
-                        weight *weight = &bone->mWeights[u];
-                        for (unsigned v = 0; v < 4; v++)
-                        {
-                            unsigned int ind = weight->mVertexId * 4 + v;
-                            if (bone_ids[ind] == -1)
-                            {
-                                bone_weights[ind] = weight->mVertexId;
-                                bone_ids[ind] = bone_id;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            elf_str bone_weight_name = elf_str_init_null("/bone_weight", 1024);
-            elf_str this_bone_weight_path = elf_str_add(&this_mdl_path, &bone_weight_name);
-            elf_write_buffer(
-                &this_bone_weight_path,
-                bone_weights,
-                bone_size);
-            elf_str bone_id_name = elf_str_init_null("/bone_id", 1024);
-            elf_str this_bone_id_path = elf_str_add(&this_mdl_path, &bone_id_name);
-            elf_write_buffer(
-                &this_bone_id_path,
-                bone_ids,
-                bone_size);
-
-            elf_str_free(&mdl_name);
-            elf_str_free(&mesh_name);
-            elf_str_free(&mdl_path);
-            elf_str_free(&this_mdl_path);
-            elf_str_free(&vertex_name);
-            elf_str_free(&this_vertex_path);
-            elf_str_free(&this_normal_path);
-            elf_str_free(&this_bit_tangent_path);
-            elf_str_free(&this_tangent_path);
-            elf_str_free(&this_index_path);
         }
     }
+    return bones;
+}
+
+void elf_import_textures(const scene *scene, const elf_str *path)
+{
     for (unsigned int i = 0; i < scene->mNumTextures; i++)
     {
         texture *texture = scene->mTextures[i];
         elf_str internal_path = elf_str_init(
             texture->mFilename.data,
             texture->mFilename.length);
-
         elf_str tex_str = elf_str_init_null("/tex", 1024);
-        elf_str tex_path = elf_str_add(replace, &tex_str);
+        elf_str tex_path = elf_str_add(path, &tex_str);
         elf_str elf_str = elf_str_replace_path(&internal_path, &tex_path);
         elf_write_buffer(&elf_str, texture->pcData, texture->mWidth);
         elf_str_free(&internal_path);
@@ -322,6 +172,213 @@ void elf_load_model(
         elf_str_free(&tex_path);
         elf_str_free(&elf_str);
     }
+}
+
+void elf_import_vertices(const scene *scene, const elf_str *path)
+{
+    for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+    {
+        mesh *mesh = scene->mMeshes[i];
+        elf_str mdl_name = elf_str_init_null("/mdl/", 1024);
+        elf_str mesh_name = elf_str_init(mesh->mName.data, mesh->mName.length);
+        elf_str mdl_path = elf_str_add(path, &mdl_name);
+        elf_str this_mdl_path = elf_str_add(&mdl_path, &mesh_name);
+        elf_str vertex_name = elf_str_init_null("/vertex", 1024);
+        elf_str this_vertex_path = elf_str_add(&this_mdl_path, &vertex_name);
+        elf_write_buffer(
+            &this_vertex_path,
+            &mesh->mVertices[0].x,
+            mesh->mNumVertices * 3 * sizeof(float));
+    }
+}
+
+void elf_import_normals(const scene *scene, const char *resource_path)
+{
+    char mdl_path[1024];
+    snprintf(mdl_path, 1024, "%s/%s", resource_path, "mdl");
+    for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+    {
+        mesh *mesh = scene->mMeshes[i];
+        unsigned int v_size = mesh->mNumVertices * 4;
+        char msh_path[1024];
+        snprintf(msh_path, 1024, "%s/%s", mdl_path, mesh->mName.data);
+
+        elf_append_buffer(msh_path, &mesh->mVertices[0].x, v_size * 3);
+        elf_append_buffer(msh_path, &mesh->mNormals[0].x, v_size * 3);
+        elf_append_buffer(msh_path, &mesh->mTangents[0].x, v_size * 3);
+        elf_append_buffer(msh_path, &mesh->mBitangents[0].x, v_size * 3);
+        for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_TEXTURECOORDS; u++)
+        {
+            unsigned int num_components = mesh->mNumUVComponents[u];
+            unsigned int coords_size = mesh->mNumUVComponents[u] * v_size;
+            GLfloat *coords = malloc(coords_size);
+            for (unsigned int y = 0; y < mesh->mNumVertices; y++)
+            {
+                for (unsigned int v = 0; v < num_components; v++)
+                {
+                    if (v == 0)
+                    {
+                        coords[y * num_components] = mesh->mTextureCoords[u][y].x;
+                    }
+                    if (v == 1)
+                    {
+                        coords[y * num_components + 1] = mesh->mTextureCoords[u][y].y;
+                    }
+                    if (v == 2)
+                    {
+                        coords[y * num_components + 2] = mesh->mTextureCoords[u][y].z;
+                    }
+                }
+            }
+            elf_append_buffer(msh_path, coords, coords_size);
+        }
+        }
+}
+
+void elf_load_model(
+    const elf_str *path,
+    const elf_str *replace,
+    unsigned int flags)
+{
+    const scene *scene = aiImportFile(path->chars, flags);
+    GHashTable *bones = elf_index_bones(scene);
+    for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+    {
+        mesh *mesh = scene->mMeshes[i];
+        elf_str mdl_name = elf_str_init_null("/mdl/", 1024);
+        elf_str mesh_name = elf_str_init(mesh->mName.data, mesh->mName.length);
+        elf_str mdl_path = elf_str_add(replace, &mdl_name);
+        elf_str this_mdl_path = elf_str_add(&mdl_path, &mesh_name);
+
+        // Tangents
+        elf_str tangent_name = elf_str_init_null("/tangent", 1024);
+        elf_str this_tangent_path = elf_str_add(&this_mdl_path, &tangent_name);
+        elf_write_buffer(
+            &this_tangent_path,
+            &mesh->mTangents[0].x,
+            mesh->mNumVertices * 3 * sizeof(float));
+
+        // Bit tangents
+        elf_str bit_tangent_name = elf_str_init_null("/bit_tangent", 1024);
+        elf_str this_bit_tangent_path = elf_str_add(&this_mdl_path, &bit_tangent_name);
+        elf_write_buffer(
+            &this_bit_tangent_path,
+            &mesh->mBitangents[0].x,
+            mesh->mNumVertices * 3 * sizeof(float));
+
+        // Faces
+        elf_str index_name = elf_str_init_null("/index", 1024);
+        elf_str this_index_path = elf_str_add(&this_mdl_path, &index_name);
+        unsigned int indices_size = mesh->mNumFaces * 3 * sizeof(unsigned int);
+        unsigned int *indices = malloc(indices_size);
+        for (unsigned int y = 0; y < mesh->mNumFaces; y++)
+        {
+            face *face = &mesh->mFaces[y];
+            for (unsigned int u = 0; u < face->mNumIndices; u++)
+            {
+                indices[y * 3 + u] = face->mIndices[u];
+            }
+        }
+        elf_write_buffer(&this_index_path, indices, indices_size);
+        free(indices);
+
+        // Tex Coords
+        for (unsigned int u = 0; u < AI_MAX_NUMBER_OF_TEXTURECOORDS; u++)
+        {
+            if (mesh->mTextureCoords[u] != NULL)
+            {
+                unsigned int num_components = mesh->mNumUVComponents[u];
+                unsigned int coords_size = mesh->mNumUVComponents[u] * mesh->mNumVertices * sizeof(GLfloat);
+                GLfloat *coords = malloc(coords_size);
+                for (unsigned int y = 0; y < mesh->mNumVertices; y++)
+                {
+                    for (unsigned int v = 0; v < num_components; v++)
+                    {
+                        if (v == 0)
+                        {
+                            coords[y * num_components] = mesh->mTextureCoords[u][y].x;
+                        }
+                        if (v == 1)
+                        {
+                            coords[y * num_components + 1] = mesh->mTextureCoords[u][y].y;
+                        }
+                        if (v == 2)
+                        {
+                            coords[y * num_components + 2] = mesh->mTextureCoords[u][y].z;
+                        }
+                    }
+                }
+                elf_str tex_name = elf_str_init_null("/tex", 1024);
+                char str[10];
+                sprintf(str, "%d", u);
+                elf_str tex_ind = elf_str_init_null(str, 1024);
+                elf_str tex_full = elf_str_add(&tex_name, &tex_ind);
+
+                elf_str this_tex_path = elf_str_add(&this_mdl_path, &tex_full);
+                elf_write_buffer(&this_tex_path, coords, coords_size);
+                elf_str_free(&this_tex_path);
+                elf_str_free(&tex_ind);
+                elf_str_free(&tex_full);
+                elf_str_free(&tex_name);
+            }
+        }
+
+        // Bones
+        unsigned int bone_size = mesh->mNumVertices * sizeof(GLfloat) * 4;
+        GLfloat *bone_weights = malloc(bone_size);
+        GLuint *bone_ids = malloc(bone_size);
+        for (unsigned int y = 0; y < mesh->mNumBones; y++)
+        {
+            bone *bone = &mesh->mBones[y];
+            if (g_hash_table_contains(bones, bone->mName.data))
+            {
+                GLint bone_id = GPOINTER_TO_INT(g_hash_table_lookup(bones, bone->mName.data));
+                for (unsigned int u = 0; u < bone->mNumWeights; u++)
+                {
+                    weight *weight = &bone->mWeights[u];
+                    for (unsigned v = 0; v < 4; v++)
+                    {
+                        unsigned int ind = weight->mVertexId * 4 + v;
+                        if (bone_ids[ind] == -1)
+                        {
+                            bone_weights[ind] = weight->mVertexId;
+                            bone_ids[ind] = bone_id;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        elf_str bone_weight_name = elf_str_init_null("/bone_weight", 1024);
+        elf_str this_bone_weight_path = elf_str_add(&this_mdl_path, &bone_weight_name);
+        elf_write_buffer(
+            &this_bone_weight_path,
+            bone_weights,
+            bone_size);
+        elf_str bone_id_name = elf_str_init_null("/bone_id", 1024);
+        elf_str this_bone_id_path = elf_str_add(&this_mdl_path, &bone_id_name);
+        elf_write_buffer(
+            &this_bone_id_path,
+            bone_ids,
+            bone_size);
+
+        elf_str_free(&mdl_name);
+        elf_str_free(&mesh_name);
+        elf_str_free(&mdl_path);
+        elf_str_free(&this_mdl_path);
+        elf_str_free(&vertex_name);
+        elf_str_free(&this_vertex_path);
+        elf_str_free(&this_normal_path);
+        elf_str_free(&this_bit_tangent_path);
+        elf_str_free(&this_tangent_path);
+        elf_str_free(&this_index_path);
+    }
+    elf_import_textures(scene, replace);
+    elf_str skel_name = elf_str_init_null("/skel/", 1024);
+    elf_str _name = elf_str_init_null("/skel/", 1024);
+    FILE *file = fopen("floats.bin", "wb");
+    fclose(file);
+
     // for (unsigned int i = 0; i < scene->mNumAnimations; i++)
     // {
     //     animation *animation = &scene->mAnimations[i];

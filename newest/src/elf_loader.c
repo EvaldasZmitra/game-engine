@@ -1,3 +1,78 @@
+#include <GL/glew.h>
+#include <stdio.h>
+
+GLuint elf_load_buffer(
+    GLsizeiptr size,
+    const void *data,
+    GLenum target,
+    GLenum usage)
+{
+    GLuint buffer_id;
+    glGenBuffers(1, &buffer_id);
+    glBindBuffer(target, buffer_id);
+    glBufferData(target, size, data, usage);
+    return buffer_id;
+}
+
+GLuint elf_file_load_buffer(const char *path, GLenum target, GLenum usage)
+{
+    FILE *file;
+    fseek(file, 0, SEEK_END);
+    GLsizeiptr size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    const void *buffer = malloc(size);
+    fread(buffer, 1, size, file);
+    GLuint buffer_id = elf_load_buffer(size, buffer, target, usage);
+    free(buffer);
+    return buffer_id;
+}
+
+void elf_file_load_vao_buffer(FILE *file)
+{
+    char path[1024];
+    GLenum target;
+    GLenum usage;
+
+    fgets(path, sizeof(path), file);
+    fscanf(file, "%d", &target);
+    fscanf(file, "%d", &usage);
+    GLuint buffer_id = elf_file_load_buffer(path, target, usage);
+    glBindBuffer(target, buffer_id);
+    if (target == 34962)
+    {
+        GLuint index;
+        GLint size;
+        GLenum type;
+        GLboolean normalized;
+        GLsizei stride;
+        GLuint offset;
+        fscanf(file, "%d", &index);
+        fscanf(file, "%d", &size);
+        fscanf(file, "%d", &type);
+        fscanf(file, "%d", &normalized);
+        fscanf(file, "%d", &stride);
+        fscanf(file, "%d", &offset);
+        glVertexAttribPointer(index, size, type, normalized, stride, (GLvoid *)offset);
+        glEnableVertexAttribArray(index);
+    }
+    fgets(path, sizeof(path), file);
+}
+
+GLuint elf_file_load_vao_buffer(FILE *file)
+{
+    FILE *file;
+    unsigned int num_buffers;
+    fscanf(file, "%d", &num_buffers);
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    for (unsigned int i = 0; i < num_buffers; i++)
+    {
+        elf_file_load_vao_buffer(file);
+    }
+    glBindVertexArray(0);
+}
+
 // #include <GL/glew.h>
 // #include <stdio.h>
 // #include <elf_loader.h>
