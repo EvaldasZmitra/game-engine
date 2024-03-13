@@ -1,0 +1,15 @@
+{
+  "type": "dynamic-lib",
+  "name": "elf_render",
+  "cflags": [
+    "-I./include",
+    "-g",
+    "-W",
+    "-Wall",
+    "-O3",
+    "-fopenmp",
+    "-fdiagnostics-color=always"
+  ],
+  "ldflags": ["-lopengl32"],
+  "libs": ["sdl2", "glew"]
+}

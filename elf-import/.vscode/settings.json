@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "*.pdf": "latex",
+    "scene.h": "c",
+    "cimport.h": "c",
+    "array": "c",
+    "string": "c",
+    "string_view": "c",
+    "span": "c",
+    "gl.h": "c",
+    "stat.h": "c",
+    "cstdlib": "c"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "compilerPath": "C:\\msys64\\ucrt64\\bin\\gcc.exe",
+      "includePath": [
+        "C:\\msys64\\ucrt64\\include",
+        "C:\\msys64\\ucrt64\\include\\glib-2.0",
+        "C:\\msys64\\ucrt64\\include\\SDL2",
+        "C:\\Projects\\game-engine\\elf-import\\include",
+        "C:\\msys64\\ucrt64\\lib\\glib-2.0\\include"
+      ]
+    }
+  ],
+  "version": 4,
+  "enableConfigurationSquiggles": true
+}

@@ -1,0 +1,15 @@
+{
+  "type": "exe",
+  "name": "elf-import",
+  "cflags": [
+    "-I./include",
+    "-g",
+    "-W",
+    "-Wall",
+    "-O0",
+    "-fopenmp",
+    "-fdiagnostics-color=always"
+  ],
+  "ldflags": ["-lopengl32", "-mconsole"],
+  "libs": ["assimp", "glib-2.0", "glew", "sdl2"]
+}

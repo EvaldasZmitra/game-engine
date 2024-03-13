@@ -1,0 +1,21 @@
+{
+  "type": "exe",
+  "name": "main",
+  "cflags": [
+    "-I./include",
+    "-g",
+    "-W",
+    "-Wall",
+    "-O0",
+    "-fopenmp",
+    "-fdiagnostics-color=always",
+    "-IC:/Projects/game-engine/elf-render/include"
+  ],
+  "ldflags": [
+    "-LC:/Projects/game-engine/elf-render/build",
+    "-lopengl32",
+    "-lelf_render",
+    "-mconsole"
+  ],
+  "libs": ["sdl2", "glew"]
+}
